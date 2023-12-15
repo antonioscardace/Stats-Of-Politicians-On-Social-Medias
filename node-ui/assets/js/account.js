@@ -2,6 +2,7 @@ var app = angular.module('account', []);
 
 app.controller('dataCtrl', ($scope, $http, $q) => {
 
+    $scope.verified = false;
     $scope.redirect = (handle) => location.href="account.html?handle=" + handle;
     const handle = getParamFromUrl('handle');
 

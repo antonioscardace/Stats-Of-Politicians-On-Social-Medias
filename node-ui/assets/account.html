@@ -28,7 +28,7 @@
             <p class="name">{{ name }}</p>
             <div class="username">
                 <a target="_blank" ng-href="https://twitter.com/{{handle}}" class="handle">@{{ handle }}</a>
-                <img class="verified" src="imgs/verified.png"/>
+                <img class="verified" ng-src="imgs/verified.png" ng-hide="!verified"/>
             </div>
             <img class="profile_image" ng-src="{{img_url}}"/>
             <p class="created">Account Created On: <b>{{ created_on }}</b></p>
