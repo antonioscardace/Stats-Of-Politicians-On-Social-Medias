@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html translate="no">
+    <head>
+
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+        <meta name="theme-color" content="#fed99b5e"/>
+        <meta name="author" content="Antonio Scardace">
+        
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poor+Story&display=swap">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/home.css">
+
+        <link rel="icon" type="image/png" sizes="32x32" href="imgs/logo.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="imgs/logo.png">
+
+        <title>Politics Stats | Home</title>
+
+    </head>
+    <body ng-app="general">
+
+        <section class="welcome">
+            <div class="intro">
+                <h1>Stats of Politicians</h1>
+                <h4>On Twitter</h4>
+                <p>This project was born in September 2022 as a university project. It was improved and re-implemented in March 2023. It aims to analyse politicians' communication strategies on social media as individuals and political groups. Stats are available in different ranges of time. Data are fetched and analysed every day at 00:00 UTC for being published in the next minutes. More details are written on the <a href="faq.html">FAQ page</a>.</p>
+                <h5><a href="https://linktr.ee/antonioscardace" target="_blank">Antonio Scardace</a></h5>
+            </div>
+        </section>
+
+        <section class="groups" ng-controller="groupsCtrl">
+            <div class="list">
+                <h1>Political Groups</h1>
+                <div class="container text-center" ng-repeat="g in groups">
+                    <div class='card'>
+                        <div class='color' ng-style='{ background: g.logo_color }'></div>
+                        <p class='name'>{{ g.name }}</p>
+                        <button type='button' class='btn' ng-click='redirect(g.name)'>Learn More</button>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="charts">
+                <div class="line-chart">
+                    <iframe id="iframe-num-followers" frameborder="0"></iframe>
+                    <p class="suggestion">To zoom in, select the time range with your mouse.</p>
+                    <button type="button" class="btn btn-danger" onclick="refreshChart(this)"><i class="fa-solid fa-arrows-rotate"></i> Reset Zoom Out</button>
+                </div>
+                <div class="line-chart">
+                    <iframe id="iframe-num-tweets" frameborder="0"></iframe>
+                    <p class="suggestion">To zoom in, select the time range with your mouse.</p>
+                    <button type="button" class="btn btn-danger" onclick="refreshChart(this)"><i class="fa-solid fa-arrows-rotate"></i> Reset Zoom Out</button>
+                </div>
+                <div class="line-chart">
+                    <iframe id="iframe-avg-len" frameborder="0"></iframe>
+                    <p class="suggestion">To zoom in, select the time range with your mouse.</p>
+                    <button type="button" class="btn btn-danger" onclick="refreshChart(this)"><i class="fa-solid fa-arrows-rotate"></i> Reset Zoom Out</button>
+                </div>
+                <div class="line-chart">
+                    <iframe id="iframe-avg-likes" frameborder="0"></iframe>
+                    <p class="suggestion">To zoom in, select the time range with your mouse.</p>
+                    <button type="button" class="btn btn-danger" onclick="refreshChart(this)"><i class="fa-solid fa-arrows-rotate"></i> Reset Zoom Out</button>
+                </div>
+                <div class="line-chart">
+                    <iframe id="iframe-avg-retweets" frameborder="0"></iframe>
+                    <p class="suggestion">To zoom in, select the time range with your mouse.</p>
+                    <button type="button" class="btn btn-danger" onclick="refreshChart(this)"><i class="fa-solid fa-arrows-rotate"></i> Reset Zoom Out</button>
+                </div>
+                <div class="line-chart">
+                    <iframe id="iframe-avg-replies" frameborder="0"></iframe>
+                    <p class="suggestion">To zoom in, select the time range with your mouse.</p>
+                    <button type="button" class="btn btn-danger" onclick="refreshChart(this)"><i class="fa-solid fa-arrows-rotate"></i> Reset Zoom Out</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="accounts" ng-controller="accountsCtrl">
+            <div class="list">
+                <h1>Analyzed Accounts</h1>
+
+                <div class="container text-center" ng-repeat="a in accounts">
+                    <div class='card'>
+                        <img ng-src='{{a.profile_image_url}}'/>
+                        <div class='info'>
+                            <p class='name'>{{ a.full_name }}</p>
+                            <p class='group'>{{ a.name }}</p>
+                        </div>
+                        <button type='button' class='btn btn-danger' ng-click='redirect(a.handle)'>Learn More</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://kit.fontawesome.com/b074a19227.js" crossorigin="anonymous"></script>
+        <script src="js/main.js"></script>
+        <script src="js/home.js"></script>
+    </body>
+</html>
