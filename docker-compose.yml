@@ -1,0 +1,99 @@
+version: '3'
+
+services:
+
+  #-----------------------#
+  #         MySQL         #
+  #-----------------------#
+
+  mysql-politics:
+    image: mysql:8.0
+    container_name: mysql-politics
+    restart: "no"
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-politics-data:/var/lib/mysql
+      - ./mysql-db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${{ secrets.MYSQL_PASSWORD }}
+
+  #-----------------------#
+  #        Grafana        #
+  #-----------------------#
+
+  grafana-charts:
+    image: grafana/grafana:8.2.6
+    container_name: grafana-charts
+    user: "0:0"
+    ports:
+      - 3000:3000
+    depends_on:
+      - mysql-politics
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - $PWD/grafana-charts/certs:/etc/grafana/certs
+      - $PWD/grafana-charts/provisioning:/etc/grafana/provisioning
+      - $PWD/grafana-charts/grafana.ini:/etc/grafana/grafana.ini
+      - $PWD/grafana-charts/dashboard.json:/var/lib/grafana/dashboards/dashboard.json
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 2
+        delay: 5s
+
+  #-----------------------#
+  #     Crawler Python    #
+  #-----------------------#
+
+  py-crawler:
+    image: python:3.8-alpine
+    container_name: py-crawler
+    working_dir: /home/app/crawler/
+    restart: "no"
+    command: sh -c "pip install -r requirements.txt && python3 -B ./"
+    volumes:
+      - $PWD/py-crawler/:/home/app/crawler/
+    depends_on:
+      - mysql-politics
+    environment:
+      DUMP_PATH: /home/app/crawler/dump.yml
+      TWITTER_BEARER: ${{ secrets.TWITTER_BEARER }}
+      MYSQL_HOST: mysql-politics
+      MYSQL_PORT: 3306
+      MYSQL_USER: ${{ secrets.MYSQL_USER }}
+      MYSQL_PSW: ${{ secrets.MYSQL_PASSWORD }}
+      MYSQL_DB: politics_stats
+
+  #-----------------------#
+  #        Node.js        #
+  #-----------------------#
+
+  node-ui:
+    image: node:19-alpine3.16
+    container_name: node-ui
+    working_dir: /home/app/node-ui/
+    command: sh -c "npm install && node app.js"
+    volumes:
+      - $PWD/node-ui:/home/app/node-ui/
+    ports:
+      - 8080:443
+    depends_on:
+      - mysql-politics
+      - grafana-charts
+    environment:
+      DB_DIALECT: mysql
+      DB_HOST: mysql-politics
+      DB_USER: ${{ secrets.MYSQL_USER }}
+      DB_PSW: ${{ secrets.MYSQL_PASSWORD }}
+      DB_NAME: politics_stats
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 2
+        delay: 5s
+
+volumes:
+  mysql-politics-data:
+  grafana-data:
